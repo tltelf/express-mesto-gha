@@ -25,7 +25,6 @@ const getUser = (req, res) => {
         res.status(ERROR_CODE).send({ message: 'Передан некорректный _id пользователя' });
         return;
       }
-      console.log(e.name);
       res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -57,14 +56,19 @@ const updateProfile = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.send({ data: user });
+    })
     .catch((e) => {
       if (e.name === 'ValidationError') {
         res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля' });
         return;
       }
       if (e.name === 'CastError') {
-        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(ERROR_CODE).send({ message: 'Передан некорректный _id пользователя' });
         return;
       }
       res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
@@ -85,14 +89,19 @@ const updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.send({ data: user });
+    })
     .catch((e) => {
       if (e.name === 'ValidationError') {
         res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении аватара' });
         return;
       }
       if (e.name === 'CastError') {
-        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(ERROR_CODE).send({ message: 'Передан некорректный _id пользователя' });
         return;
       }
       res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });

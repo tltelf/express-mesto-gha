@@ -33,7 +33,7 @@ const deleteCard = (req, res) => {
         res.status(ERROR_NOTFOUND).send({ message: 'Карточка с указанным _id не найдена' });
         return;
       }
-      res.send({ message: 'Пост удалён' })
+      res.send({ message: 'Пост удалён' });
     })
     .catch((e) => {
       if (e.name === 'CastError') {
