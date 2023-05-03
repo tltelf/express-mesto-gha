@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = require('./routes');
-const { celebrate, Joi, Segments } = require('celebrate');
+const { celebrate, Joi, errors, Segments } = require('celebrate');
 
 const {
   login,
@@ -41,6 +41,7 @@ app.post(
       password: Joi.string().required().min(8),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(/^https*:\/\/(w{3})*\w+\S+$/),
     }),
   }),
   createUser,
@@ -49,6 +50,8 @@ app.post(
 app.use(auth);
 
 app.use(router);
+
+app.use(errors());
 
 app.use(errorHandler);
 

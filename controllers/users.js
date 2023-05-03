@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
 
 const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
@@ -75,7 +76,7 @@ const createUser = (req, res, next) => {
     .then((user) => res.send({ email: user.email, id: user._id }))
     .catch((e) => {
       if (e.errors.email) {
-        next(new BadRequestError(`${e.errors.email.properties.message}`));
+        next(new ConflictError(`${e.errors.email.properties.message}`));
       }
       next(e);
     });
