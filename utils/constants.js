@@ -1,9 +1,0 @@
-const ERROR_CODE = 400;
-const ERROR_NOTFOUND = 404;
-const DEFAULT_ERROR = 500;
-
-module.exports = {
-  ERROR_CODE,
-  ERROR_NOTFOUND,
-  DEFAULT_ERROR,
-};
