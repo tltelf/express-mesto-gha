@@ -1,8 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {
+  celebrate,
+  Joi,
+  errors,
+  Segments,
+} = require('celebrate');
 const router = require('./routes');
-const { celebrate, Joi, errors, Segments } = require('celebrate');
 
 const {
   login,
