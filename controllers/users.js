@@ -49,12 +49,7 @@ const getUser = (req, res, next) => {
       }
       res.send(user);
     })
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный _id пользователя'));
-      }
-      next(e);
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
@@ -73,7 +68,13 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send({ email: user.email, id: user._id }))
+    .then((user) => res.send({
+      email: user.email,
+      password: req.body.password,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+    }))
     .catch((e) => {
       if (e.errors.email) {
         next(new ConflictError(`${e.errors.email.properties.message}`));

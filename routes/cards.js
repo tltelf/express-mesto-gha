@@ -12,6 +12,7 @@ const {
 const checkCardOwner = require('../middlewares/checkCardOwner');
 
 cardsRouter.get('/', getCards);
+
 cardsRouter.post(
   '/',
   celebrate({
@@ -22,8 +23,36 @@ cardsRouter.post(
   }),
   createCard,
 );
-cardsRouter.delete('/:id', checkCardOwner, deleteCard);
-cardsRouter.put('/:id/likes', likeCard);
-cardsRouter.delete('/:id/likes', dislikeCard);
+
+cardsRouter.delete(
+  '/:id',
+  celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.string().alphanum().length(24),
+    }),
+  }),
+  checkCardOwner,
+  deleteCard,
+);
+
+cardsRouter.put(
+  '/:id/likes',
+  celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.string().alphanum().length(24),
+    }),
+  }),
+  likeCard,
+);
+
+cardsRouter.delete(
+  '/:id/likes',
+  celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.string().alphanum().length(24),
+    }),
+  }),
+  dislikeCard,
+);
 
 module.exports = cardsRouter;

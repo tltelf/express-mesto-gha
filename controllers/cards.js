@@ -46,15 +46,7 @@ const likeCard = (req, res, next) => {
       }
       res.send(card);
     })
-    .catch((e) => {
-      if (e.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
-      }
-      if (e.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный _id карточки'));
-      }
-      next(e);
-    });
+    .catch(next);
 };
 
 const dislikeCard = (req, res, next) => {
@@ -72,15 +64,7 @@ const dislikeCard = (req, res, next) => {
       }
       res.send(card);
     })
-    .catch((e) => {
-      if (e.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные для снятия лайка'));
-      }
-      if (e.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный _id карточки'));
-      }
-      next(e);
-    });
+    .catch(next);
 };
 
 module.exports = {
