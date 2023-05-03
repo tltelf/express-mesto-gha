@@ -70,7 +70,6 @@ const createUser = (req, res, next) => {
     }))
     .then((user) => res.send({
       email: user.email,
-      password: user.password,
       name: user.name,
       about: user.about,
       avatar: user.avatar,
