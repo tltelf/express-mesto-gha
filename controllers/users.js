@@ -33,7 +33,7 @@ const getUsers = (req, res, next) => {
     .catch(next);
 };
 
-const createUser = (req, res, next) => {
+const createUser = async (req, res, next) => {
   const {
     name,
     about,
@@ -41,9 +41,10 @@ const createUser = (req, res, next) => {
     email,
     password,
   } = req.body;
-  const findUsr = User.findOne({ email });
+  const findUsr = await User.findOne({ email });
   if (findUsr) {
-    throw new ConflictError('Неправильный формат почты или почта уже используется');
+    next(new ConflictError('Неправильный формат почты или почта уже используется'));
+    return;
   }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
