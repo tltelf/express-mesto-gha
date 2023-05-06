@@ -1,12 +1,6 @@
-const { isCelebrateError } = require('celebrate');
-
 // eslint-disable-next-line no-unused-vars
 module.exports = ((err, req, res, next) => {
-  let { statusCode = 500, message } = err;
-  if (isCelebrateError(err)) {
-    message = err.details.get('body').details[0].message;
-    statusCode = 400;
-  }
+  const { statusCode = 500, message } = err;
   res
     .status(statusCode)
     .send({

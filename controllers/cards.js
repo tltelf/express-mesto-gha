@@ -1,9 +1,11 @@
+const { default: mongoose } = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 
 const getCards = (req, res, next) => {
   Card.find({})
+    .populate(['owner'])
     .then((cards) => res.send(cards))
     .catch(next);
 };
@@ -15,7 +17,7 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: id })
     .then((card) => res.send(card))
     .catch((e) => {
-      if (e.name === 'ValidationError') {
+      if (e instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Переданы некорректные данные при создании карточки'));
         return;
       }
@@ -35,11 +37,9 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
-    {
-      new: true,
-      runValidators: true,
-    },
+    { new: true },
   )
+    .populate(['owner', 'likes'])
     .then((card) => {
       if (card === null) {
         throw new NotFoundError('Передан несуществующий _id карточки');
@@ -53,11 +53,9 @@ const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
-    {
-      new: true,
-      runValidators: true,
-    },
+    { new: true },
   )
+    .populate(['owner', 'likes'])
     .then((card) => {
       if (card === null) {
         throw new NotFoundError('Передан несуществующий _id карточки');

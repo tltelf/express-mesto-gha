@@ -1,6 +1,6 @@
 const cardsRouter = require('express').Router();
-const { celebrate, Joi, Segments } = require('celebrate');
-
+const { celebrate } = require('celebrate');
+const { createCardJoi, idJoi } = require('../utils/reqValidate');
 const {
   getCards,
   createCard,
@@ -15,43 +15,26 @@ cardsRouter.get('/', getCards);
 
 cardsRouter.post(
   '/',
-  celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().pattern(/^https*:\/\/(w{3})*\w+\S+$/),
-    }),
-  }),
+  celebrate(createCardJoi),
   createCard,
 );
 
 cardsRouter.delete(
   '/:id',
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.string().alphanum().length(24),
-    }),
-  }),
+  celebrate(idJoi),
   checkCardOwner,
   deleteCard,
 );
 
 cardsRouter.put(
   '/:id/likes',
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.string().alphanum().length(24),
-    }),
-  }),
+  celebrate(idJoi),
   likeCard,
 );
 
 cardsRouter.delete(
   '/:id/likes',
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.string().alphanum().length(24),
-    }),
-  }),
+  celebrate(idJoi),
   dislikeCard,
 );
 
