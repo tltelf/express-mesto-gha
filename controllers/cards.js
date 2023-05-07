@@ -1,7 +1,7 @@
 const { default: mongoose } = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
-const NotFoundError = require('../errors/NotFoundError');
+const changeLikeStatus = require('../utils/changeLikeStatus');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -34,35 +34,13 @@ const deleteCard = (req, res, next) => {
 };
 
 const likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .then((card) => {
-      if (card === null) {
-        throw new NotFoundError('Передан несуществующий _id карточки');
-      }
-      res.send(card);
-    })
-    .catch(next);
+  const params = { $addToSet: { likes: req.user._id } };
+  changeLikeStatus(req, res, next, params);
 };
 
 const dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.id,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .then((card) => {
-      if (card === null) {
-        throw new NotFoundError('Передан несуществующий _id карточки');
-      }
-      res.send(card);
-    })
-    .catch(next);
+  const params = { $pull: { likes: req.user._id } };
+  changeLikeStatus(req, res, next, params);
 };
 
 module.exports = {

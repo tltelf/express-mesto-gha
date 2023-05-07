@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
   }
   if (card.owner.toString() !== req.user._id) {
     next(new ForbiddenError('Вы можете удалять только собственные карточки'));
-    return;
+  } else {
+    next();
   }
-  next();
 };

@@ -10,11 +10,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: async (email) => {
-        const emailCount = await mongoose.models.user.countDocuments({ email });
-        if (emailCount) {
-          return !emailCount;
-        } return isEmail(email);
+      validator(email) {
+        return isEmail(email);
       },
       message: 'Неправильный формат почты или почта уже используется',
     },

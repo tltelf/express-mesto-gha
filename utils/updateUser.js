@@ -7,7 +7,10 @@ module.exports = function updateUser(req, res, next, params) {
   User.findByIdAndUpdate(
     req.user._id,
     params,
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .then((user) => {
       if (!user) {
@@ -16,9 +19,10 @@ module.exports = function updateUser(req, res, next, params) {
       res.send(user);
     })
     .catch((e) => {
-      if (e instanceof mongoose.Error.CastError) {
-        next(new BadRequestError('Передан некорректный _id пользователя'));
+      if (e instanceof mongoose.Error.ValidationError) {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(e);
       }
-      next(e);
     });
 };
