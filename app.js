@@ -7,6 +7,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const { signinJoi, signupJoi } = require('./utils/reqValidate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect(config.URL, {
   useNewUrlParser: true,
 });
+
+app.use(requestLogger);
 
 app.post(
   '/signin',
@@ -32,6 +35,8 @@ app.post(
 app.use(auth);
 
 app.use(router);
+
+app.use(errorLogger);
 
 app.use(errors());
 
